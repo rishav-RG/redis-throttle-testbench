@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redis Rate Limiting API - Test Interface</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <h1>Redis Rate Limiting API</h1>
+            <p class="subtitle">Test Interface for Rate-Limited Endpoints</p>
+        </header>
+
+        <!-- Main Content Wrapper -->
+        <div class="content-wrapper">
+            <!-- Left Column: Main Content -->
+            <div class="main-content">
+
+                <div class="actions-grid">
+                    <button class="btn btn-primary" onclick="homepage('/')">
+                        <span class="btn-icon">🏠</span>
+                        Refresh Home
+                    </button>
+                    <button class="btn btn-secondary" onclick="testApi('/products')">
+                        <span class="btn-icon">📦</span>
+                        Get All Products
+                    </button>
+                </div>
+
+                <div class="forms-grid">
+                    <div class="form-card">
+                        <label for="productIdDetails">Product ID for Details</label>
+                        <div class="input-group">
+                            <input type="number" id="productIdDetails" placeholder="Enter Product ID" min="1">
+                            <button class="btn btn-accent" onclick="fetchProductDetails()">
+                                Get Details
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-card">
+                        <label for="productIdOrder">Product ID for Order</label>
+                        <div class="input-group">
+                            <input type="number" id="productIdOrder" placeholder="Enter Product ID" min="1">
+                            <button class="btn btn-success" onclick="placeOrder()">
+                                Place Order
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Output Section -->
+                <div class="output-section">
+                    <div class="output-header">
+                        <h3>Response</h3>
+                        <button class="btn-clear" onclick="clearOutput()">Clear</button>
+                    </div>
+                    <div class="output" id="output">
+                        <div class="output-placeholder">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                            <p>Click any button above to test the API endpoints</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Info Sidebar -->
+            <aside class="info-sidebar">
+                <div class="info-box">
+                    <button class="info-box-header">
+                        <h2>📖 About This Project</h2>
+                        <span class="toggle-icon">+</span>
+                    </button>
+                    <div class="info-box-content">
+                        <p>Features :</p>
+                        <ul>
+                            <li><strong>Rate Limiting:</strong> Prevents abuse by limiting requests per IP</li>
+                            <li> <strong>Redis Caching:</strong> Stores data temporarily for faster responses</li>
+                            <li> <strong>Performance:</strong> Response speed improvement with caching</li>
+                            <li> <strong>Cache Invalidation:</strong> Updates cache when data changes</li>
+                            <li> <strong>Customization :</strong> Different rate limits can be set to different routes
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <button class="info-box-header">
+                        <h2>🧠 How It Works</h2>
+                        <span class="toggle-icon">+</span>
+                    </button>
+                    <div class="info-box-content">
+                        <p>This API uses a <strong>Sliding Window Counter</strong> algorithm with Redis for efficient
+                            rate limiting.</p>
+                        <ol>
+                            <li><strong>IP Tracking:</strong> A unique key is created in Redis for each user IP (e.g.,
+                                `127.0.0.1:products:request_count`).</li>
+                            <li><strong>Increment Counter:</strong> On each request, Redis `INCR` atomically increases
+                                the count for that key.</li>
+                            <li><strong>Set Expiry:</strong> On the first request in a window, `EXPIRE` sets a timeout
+                                (e.g., 20 seconds).</li>
+                            <li><strong>Check Limit:</strong> If the count exceeds the limit before the window expires,
+                                the request is blocked with a 429 error.</li>
+                        </ol>
+                        <p>This approach is memory-efficient and performs well under high load.</p>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <button class="info-box-header">
+                        <h2>🎯 How to Use</h2>
+                        <span class="toggle-icon">+</span>
+                    </button>
+                    <div class="info-box-content">
+                        <div class="step">
+                            <span class="step-number">1</span>
+                            <div class="step-content">
+                                <strong>Test Rate Limits</strong>
+                                <p>Click buttons multiple times to see rate limiting in action</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">2</span>
+                            <div class="step-content">
+                                <strong>Experience Caching</strong>
+                                <p>First request takes 2s (intentionally done),
+                                    to showcase instant cached responses!</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">3</span>
+                            <div class="step-content">
+                                <strong>Test Cache Invalidation</strong>
+                                <p>Place an order to clear the cache, then fetch again</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">4</span>
+                            <div class="step-content">
+                                <strong>Watch Response Headers</strong>
+                                <p>Check rate limit info in the response output</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </aside>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <h3>⚙️ Tech Stack</h3>
+            <br>
+            <div>
+                <span class="tech-tag">Node.js</span>
+                <span class="tech-tag">Express</span>
+                <span class="tech-tag">Redis</span>
+                <span class="tech-tag">IORedis</span>
+            </div>
+            <br>
+            <p> Built by <strong>Rishav </strong></p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
