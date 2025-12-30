@@ -1,0 +1,28 @@
+{
+  "name": "redis-throttle-testbench",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node backend/app.js",
+    "dev": "nodemon backend/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rishav-RG/redis-throttle-testbench.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/rishav-RG/redis-throttle-testbench/issues"
+  },
+  "homepage": "https://github.com/rishav-RG/redis-throttle-testbench#readme",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "ioredis": "^5.8.2",
+    "nodemon": "^3.1.11"
+  }
+}
