@@ -1,6 +1,6 @@
 import express from "express";
 import "dotenv/config";
-import { redis } from "./Redis/redisClient";
+import { redis } from "./Redis/redisClient.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { responseTime } from "./middleware/responseTime.js";
