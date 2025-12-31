@@ -1,0 +1,31 @@
+# Use an official Node.js runtime as a parent image
+FROM node:18-alpine
+
+# Set the working directory for the entire application
+WORKDIR /app
+
+# Copy the frontend files first
+COPY frontend ./frontend
+
+# Set the working directory to the backend for dependency installation
+WORKDIR /app/backend
+
+# Copy package.json and package-lock.json to the backend directory
+# This leverages Docker's layer caching for faster builds
+COPY backend/package*.json ./
+
+# Install backend dependencies
+RUN npm install
+
+# Copy the rest of the backend code
+COPY backend/ .
+
+# Go back to the root app directory
+WORKDIR /app
+
+# Expose the port the app runs on
+EXPOSE 3000
+
+# Define the command to run your application
+# This will execute "node backend/app.js"
+CMD ["node", "backend/app.js"]
