@@ -79,11 +79,14 @@ Incoming Request (e.g., GET /products)
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
-- npm
+- Node.js (v14 or higher) **(only for manual install)**
+- npm **(only for manual install)**
 - Access to a Redis instance (local or cloud-based like Upstash)
+- **OR** [Docker](https://www.docker.com/get-started/) installed (for running with containers)
 
 ### Installation & Setup
+
+#### **Option 1: Run Directly with Node.js**
 
 1.  **Clone the repository:**
 
@@ -132,6 +135,60 @@ Incoming Request (e.g., GET /products)
       ```
 
 The server will be running at `http://localhost:3000`.
+
+---
+
+#### **Option 2: Run Everything with Docker**
+
+You can run the entire application using Docker, either with your own Redis instance (cloud) or by running Redis locally in a separate container.
+
+##### **A. Using a Cloud Redis Service (e.g., Upstash)**
+
+1. **Set your Redis URL (from your provider):**
+
+   ```sh
+   docker run -d -p 3000:3000 --name redis-throttle-app \
+     -e REDIS_URL="rediss://<user>:<password>@<host>:<port>" \
+     redis-throttle-app
+   ```
+
+   - Replace the `REDIS_URL` value with your actual Redis connection string.
+   - The app will be available at [http://localhost:3000](http://localhost:3000).
+
+##### **B. Using Local Redis via Docker**
+
+1. **Start a Redis container:**
+
+   ```sh
+   docker run -p 6379:6379 --name my-redis-container -d redis
+   ```
+
+2. **Run your app container and link it to the local Redis:**
+
+   ```sh
+   docker run -d -p 3000:3000 --name redis-throttle-app \
+     --env REDIS_URL="redis://host.docker.internal:6379" \
+     redis-throttle-app
+   ```
+
+   - `host.docker.internal` allows your app container to access Redis running on your host machine (works on Docker Desktop for Windows/Mac).
+   - If you are on Linux, use your host's IP address or set up a Docker network and use the Redis container name as the host.
+
+---
+
+**Note:**
+
+- If you make changes to the code, rebuild the Docker image with:
+  ```sh
+  docker build -t redis-throttle-app .
+  ```
+
+---
+
+Now you can use either method to run the project:
+
+- **Directly with Node.js** (manual install, `.env` required)
+- **Fully containerized with Docker** (no Node.js/npm needed on your machine)
 
 ## 🔧 Configuration
 
