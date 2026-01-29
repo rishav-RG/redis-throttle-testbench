@@ -144,16 +144,22 @@ You can run the entire application using Docker, either with your own Redis inst
 
 ##### **A. Using a Cloud Redis Service (e.g., Upstash)**
 
-1. **Set your Redis URL (from your provider):**
+1. **Create a `.env` file with your Redis URL:**
 
-   ```sh
-   docker run -d -p 3000:3000 --name redis-throttle-app \
-     -e REDIS_URL="rediss://<user>:<password>@<host>:<port>" \
-     redis-throttle-app
-   ```
+```env
+REDIS_URL=rediss://<user>:<password>@<host>:<port>
+```
 
-   - Replace the `REDIS_URL` value with your actual Redis connection string.
-   - The app will be available at [http://localhost:3000](http://localhost:3000).
+2. **Run the container using your `.env` file:**
+
+```sh
+docker run -d -p 3000:3000 --name redis-throttle-app \
+  --env-file .env \
+  redis-throttle-app
+```
+
+- Replace the `REDIS_URL` value in your `.env` file with your actual Redis connection string.
+- The app will be available at [http://localhost:3000](http://localhost:3000).
 
 ##### **B. Using Local Redis via Docker**
 
@@ -212,7 +218,7 @@ app.get(
   "/products",
   rateLimiter({ limit: 10, timer: 60, keys: "products" }), // Changed here
   getCachedData("products"),
-  getAllProducts
+  getAllProducts,
 );
 // ...existing code...
 ```
